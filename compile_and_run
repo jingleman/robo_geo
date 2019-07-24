@@ -6,6 +6,7 @@
 #   main .hpp and .cpp.
 # TO DO:
 # --Replace env var w/ arg.
+# --Call "source ... activate" and "pip install" here, for convenience.
 
 
 set -exo pipefail
@@ -23,7 +24,7 @@ if [ ! -e $dir ]; then
 fi
 
 
-# Mk sure visilibity itself is working.
+# Uncomment to mk sure visilibity itself is working.
 #cd $dir./src
 #make 2>&1 | tee make.log   # make clean doesn't work.
 #make main 2>&1 | tee make_main.log
@@ -33,8 +34,15 @@ fi
 
 
 export VISILIBITY_SRC=$PWD/$dir/src
+# May need to export CC and CXX here to desired compiler.
+
+
 
 python setup.py clean
+  # apparently insufficient.
+if [ -e build ]; then
+  rm -rf build
+fi
 python setup.py install
 
 
