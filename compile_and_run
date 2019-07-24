@@ -12,11 +12,16 @@
 set -exo pipefail
 
 
-dir=$1
+#dir=$1
+dir=visiLibity_gitClone_v1
+
 if [ "$dir" == "" ]; then
   echo "Requires argument for (possibly non-existent) subdirectory in which VisiLibity repo is (to be) clone(d) from github.com."
   exit 1
 fi
+
+rm -rf $dir
+
 if [ ! -e $dir ]; then
   git clone https://github.com/karlobermeyer/VisiLibity1.git ./$dir
       # Remember git commit inside $dir will use this repo,
@@ -37,15 +42,9 @@ export VISILIBITY_SRC=$PWD/$dir/src
 # May need to export CC and CXX here to desired compiler.
 
 
-
+rm -rf build    # apparently more reliable than "setup.py clean" below.
 python setup.py clean
-  # apparently insufficient.
-if [ -e build ]; then
-  rm -rf build
-fi
 python setup.py install
-
-
 python compute_visibility_polygons.py
 
 
