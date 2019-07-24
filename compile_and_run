@@ -1,0 +1,43 @@
+#!/bin/bash -f
+
+# Compiles and runs Python extension of visiLibity c++ Visibility_Polygon functionality.
+# Adapted from github eggachechat.
+# For now, also starts by cloning git repo of visilibity, though we only need the
+#   main .hpp and .cpp.
+# TO DO:
+# --Replace env var w/ arg.
+
+
+set -exo pipefail
+
+
+dir=$1
+if [ "$dir" == "" ]; then
+  echo "Requires argument for (possibly non-existent) subdirectory in which VisiLibity repo is (to be) clone(d) from github.com."
+  exit 1
+fi
+if [ ! -e $dir ]; then
+  git clone https://github.com/karlobermeyer/VisiLibity1.git ./$dir
+      # Remember git commit inside $dir will use this repo,
+      # not the repo I defined a few directories up.
+fi
+
+
+# Mk sure visilibity itself is working.
+#cd $dir./src
+#make 2>&1 | tee make.log   # make clean doesn't work.
+#make main 2>&1 | tee make_main.log
+#./main ./example1.environment ./example1.guards 2>&1 | tee ./main.log
+#cd -
+
+
+
+export VISILIBITY_SRC=$PWD/$dir/src
+
+python setup.py clean
+python setup.py install
+
+
+python compute_visibility_polygons.py
+
+
